@@ -21,15 +21,16 @@ browser.webRequest.onBeforeRequest.addListener(
     }
 
     if (query) {
-      console.log("hostname:", url.hostname)
+      console.log("hostname:", url.hostname);
       console.log("検索クエリ:", query);
-      const d = new Date()
-      console.log(d.toISOString())
+      const d = new Date();
+      console.log(d.toISOString());
 
       // ローカルストレージに保存
       browser.storage.local.get("searchQueries").then((data) => {
         const queries = data.searchQueries || [];
-        queries.push({ "query": query, "time": d.toISOString() });
+        const q = { "query": query, "time": d.toISOString() }
+        queries.push(q);
         browser.storage.local.set({ searchQueries: queries });
       });
     }
