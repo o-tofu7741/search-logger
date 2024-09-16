@@ -38,3 +38,30 @@ browser.webRequest.onBeforeRequest.addListener(
   { urls: searchEngines },
   ["blocking"]
 );
+
+function downloadFile(content, filename) {
+  const blob = new Blob([content], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  browser.downloads.download({
+    url: url,
+    filename: filename,
+    saveAs: true
+  });
+}
+
+function saveSearchQueriesToFile() {
+  browser.storage.local.get("searchQueries").then((data) => {
+    const queries = data.searchQueries || [];
+    // JSON形式に変換して保存
+    const fileContent = JSON.stringify(queries, null, 2);
+    downloadFile(fileContent, "search_queries.json");
+  });
+}
+
+// ポップアップボタンからダウンロードするイベントを設定
+browser.runtime.onMessage.addListener((message) => {
+  if (message.action === "download") {
+    saveSearchQueriesToFile();
+  }
+});
