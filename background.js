@@ -24,12 +24,13 @@ browser.webRequest.onBeforeRequest.addListener(
       console.log("hostname:", url.hostname);
       console.log("検索クエリ:", query);
       const d = new Date();
-      console.log(d.toISOString());
+      const jstDate = new Date(d.getTime() + (9 * 60 * 60 * 1000)); // JSTに変換
+      console.log(jstDate.toISOString());
 
       // ローカルストレージに保存
       browser.storage.local.get("searchQueries").then((data) => {
         const queries = data.searchQueries || [];
-        const q = { "query": query, "time": d.toISOString() }
+        const q = { "query": query, "time": jstDate.toISOString() }
         queries.push(q);
         browser.storage.local.set({ searchQueries: queries });
       });
